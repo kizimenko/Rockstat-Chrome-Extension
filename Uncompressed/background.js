@@ -12,10 +12,13 @@ chrome.webRequest.onBeforeRequest.addListener(
 
 // Слушатель и обработчик события перезагрузки вкладки
 chrome.tabs.onUpdated.addListener(function(id, info, tab) {
-	// Если в объекте requestsAll хранятся данные для перезагруженной вкладки
-	if ( info.status === 'loading' && requestsAll.hasOwnProperty(id) ) {
-		delete requestsAll[id]; // Удалить данные для перезагруженной вкладки
-	}
+    if (info.status === 'loading' && requestsAll.hasOwnProperty(id)) {
+        chrome.storage.local.get('dataPersistence', function(data) {
+            if (!data.dataPersistence) {
+                delete requestsAll[id]; // Удалить данные для перезагруженной вкладки, только если переключатель выключен
+            }
+        });
+    }
 });
 
 // Слушатель и обработчик события закрытия вкладки
@@ -30,6 +33,7 @@ chrome.tabs.onRemoved.addListener(function(id, info) {
 chrome.browserAction.onClicked.addListener(function(tab) {
 	chrome.browserAction.setPopup({popup: 'popup.html'});
 });
+
 
 // Слушатель и обработчик события установления соединения с popup
 chrome.runtime.onConnect.addListener(function(port) {

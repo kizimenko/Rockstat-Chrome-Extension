@@ -22,6 +22,29 @@ function init() {
     msg(global); // Обработка сообщений
     document.querySelector('#filter').addEventListener('input', applyFilter); // Обработка фильтрации
     document.querySelector('#clearFilter').addEventListener('click', clearFilter); // Обработка очистки поля ввода фильтра
+
+    // Получить div для добавления чекбокса
+    let persistanceDiv = document.querySelector('.persistance');
+    
+    // Создать чекбокс
+    let checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = 'dataPersistenceToggle';
+    checkbox.name = 'dataPersistenceToggle';
+
+    // Добавить чекбокс в div
+    persistanceDiv.appendChild(checkbox);
+
+    // Добавить обработчик событий для чекбокса
+    checkbox.addEventListener('change', function() {
+        // Обновить хранилище с новым значением чекбокса
+        chrome.storage.local.set({'dataPersistence': this.checked});
+    });
+
+    // Установить начальное значение чекбокса на основе хранилища
+    chrome.storage.local.get('dataPersistence', function(data) {
+        checkbox.checked = data.dataPersistence || false;
+    });
 }
 
 // Обработка сообщений
