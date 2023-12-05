@@ -1,5 +1,5 @@
 # Rockstat-Chrome-Extension
-Расширение для отслеживания аналитики [Rocktsta](https://rock.st/)
+Расширение для отслеживания аналитики [Rocktstat](https://rock.st/)
 
 Для установки 
 - скачиваем архив
