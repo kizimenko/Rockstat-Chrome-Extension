@@ -52,6 +52,7 @@ chrome.runtime.onConnect.addListener(function(port) {
     if (request.msg !== 'handshake') return;
 
     chrome.tabs.query({active: true, currentWindow: true}, async function(tabs) {
+      if (!tabs[0]) return;
       let id = tabs[0].id;
       let data = requestsAll[id] || [];
       port.postMessage({msg: 'requests', data: data});

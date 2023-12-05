@@ -8,18 +8,19 @@ body {
 
 .logo {
 	float: left;
-	padding-top: 14px;
-	width: 45px
+	width: 35px
 }
 
+
+
 .header {
-	height: 70px;
+	height: 50px;
 	color: #000;
 	background-color: #f6f7f8;
 	border-bottom: 2px solid #d9d9d9;
 	font-size: 16px;
-	line-height: 45px;
-	padding: 20px 20px 20px 12px;
+	/* line-height: 45px; */
+	padding: 10px 0px 0px 12px;
 	top: 0;
 	width: 100%
 }
@@ -28,7 +29,6 @@ body {
 	float: left;
 	line-height: normal;
 	margin-left: 10px;
-	padding-top: 16px
 }
 
 .title {
@@ -197,4 +197,17 @@ span.autohide {
 
 .persistance{
 	padding-left: 0px;
+}
+
+.user_info label{
+	font-size: 10px;
+}
+.w_50 {
+	width: 50%;
+	float: left;
+}
+.w_70 {
+	width: 70%;
+	float: left;
+	padding-left: 10px;
 }

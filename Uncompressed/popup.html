@@ -1,17 +1,42 @@
 <!doctype html>
 <html>
+
 <head>
 	<meta charset="utf-8">
 	<title>Rockstat</title>
 	<link rel="stylesheet" href="popup.css">
 	<script type="module" src="popup.js"></script>
 </head>
+
 <body>
 	<noscript>Вам необходимо включить JavaScript для запуска этого приложения.</noscript>
 	<header class="header">
-		<div><img class="logo" src="/images/logo.svg"></div>
+		<div><img class="logo" src="/images/logo_jpg.jpeg"></div>
 		<div class="banner"><span class="title">Rockstat</span>
-			<br><span class="version"></span></div>
+			<br><span class="version"></span>
+		</div>
+		<div class="user_info w_70">
+			<div class="w_50">
+				<div>
+					<label>uid:</label>
+					<label id="uid"></label>
+				</div>
+				<div>
+					<label>user_id:</label>
+					<label id="user_id"></label>
+				</div>
+			</div>
+			<div class="w_50">
+				<div>
+					<label>currency:</label>
+					<label id="currency"></label>
+				</div>
+				<div>
+					<label>locale:</label>
+					<label id="locale"></label>
+				</div>
+			</div>	
+		</div>
 	</header>
 	<div class="summary">
 		<span>
@@ -26,15 +51,17 @@
 		<div class="persistance">
 			<label for="saveFilterCheckbox">Включить сохранение фильтра</label>
 		</div>
+		
 	</div>
 	<div class="body">
 		<div class="linebreak"></div>
 		<div class="wrapp">
 			<div class="container font"></div>
 		</div>
-		
+
 	</div>
-	
-	
+
+
 </body>
+
 </html>

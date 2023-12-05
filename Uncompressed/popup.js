@@ -62,7 +62,7 @@ function msg(global) {
         if (request.msg === 'requests') {
             // Вывести полученную информацию о запросах в html документ
             document.querySelector('div.container.font').appendChild( objToDoc(request.data, global) );
-            console.log(request);
+            // console.log(request);
             applyFilter(); // Обновить список блоков по фильтру
             global.reqCount += request.data.length; // Увеличить счетчик количества выполненных запросов
 
@@ -81,6 +81,13 @@ function msg(global) {
             }
             document.querySelector("#requestCount").innerText = n;
             document.querySelector("#textReqCount").innerText = ` ${textReqCount} на `;
+
+            if (request.data[0].url == 'https://rstat.rockmostbet.com/band/t4k.json?') {
+                document.querySelector('#uid').innerText = request.data[0].uid;
+                document.querySelector('#user_id').innerText = request.data[0].user.id;
+                document.querySelector('#currency').innerText = request.data[0].user.currency;
+                document.querySelector('#locale').innerText = request.data[0].user.locale;
+            }
         }
     });
 }
