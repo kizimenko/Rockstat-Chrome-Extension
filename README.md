@@ -1,2 +1,10 @@
 # Rockstat-Chrome-Extension
-The Chrome extension provides a visual way to track t4k requests without opening chrome console
+Расширение для отслеживания аналитики [Rocktstat](https://rock.st/)
+
+Для установки 
+- скачиваем архив
+- заходим в хром в расширения
+- включаем режим разработчика
+- переносим папку из архива Uncompressed
+
+
