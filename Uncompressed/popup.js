@@ -62,6 +62,7 @@ function msg(global) {
         if (request.msg === 'requests') {
             // Вывести полученную информацию о запросах в html документ
             document.querySelector('div.container.font').appendChild( objToDoc(request.data, global) );
+            console.log(request);
             applyFilter(); // Обновить список блоков по фильтру
             global.reqCount += request.data.length; // Увеличить счетчик количества выполненных запросов
 

@@ -15,6 +15,8 @@ chrome.webRequest.onBeforeRequest.addListener(
       encodedURI = decodeURIComponent(escape(encodedURI));
       let postedString = decodeURIComponent(encodedURI);
       let postedObj = JSON.parse(postedString);
+      postedObj['url'] = details.url;
+      // console.log(details);
       writeNewRequest(details.tabId, postedObj);
     }
   },

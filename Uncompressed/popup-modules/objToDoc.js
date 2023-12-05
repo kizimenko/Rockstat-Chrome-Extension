@@ -4,8 +4,10 @@ export default function objToDoc(objArr, global) {
 
     // Перебор массива объектов - запросов для активной вкладки
     objArr.forEach(function(obj) {
-        let labelText = (obj.name || '') + ' - ' + (obj.projectId || '');
+        let domain = obj.url.match(/.*:\/\/([^\/]+).*/)?.[1] || ''; // Домен куда шлем аналитику
+        let labelText = (obj.name || '') + ' - ' + (obj.projectId || '') + (domain ? ' - ' + domain : '');
         createHtmlBlock(obj, labelText, fragment);
+        // console.log(obj);
     });
 
     // Создание разворачиваемого блока HTML
