@@ -19,6 +19,8 @@ function init() {
         document.querySelector("#domain").innerHTML = domain;
     });
 
+
+
     msg(global); // Обработка сообщений
     document.querySelector('#filter').addEventListener('input', applyFilter); // Обработка фильтрации
     document.querySelector('#clearFilter').addEventListener('click', clearFilter); // Обработка очистки поля ввода фильтра
@@ -81,13 +83,32 @@ function msg(global) {
             }
             document.querySelector("#requestCount").innerText = n;
             document.querySelector("#textReqCount").innerText = ` ${textReqCount} на `;
-
-            if (request.data[0].url == 'https://rstat.rockmostbet.com/band/t4k.json?') {
-                document.querySelector('#uid').innerText = request.data[0].uid;
-                document.querySelector('#user_id').innerText = request.data[0].user.id;
-                document.querySelector('#currency').innerText = request.data[0].user.currency;
-                document.querySelector('#locale').innerText = request.data[0].user.locale;
-            }
+            
+            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                let domain = new URL(tabs[0].url).hostname;  // More reliable domain extraction using URL object
+                let expectedURL = `https://${domain}/an/band/t4k.json`;
+            
+                // Check each request to see if it matches the expected URL pattern
+                request.data.forEach(item => {
+                    let requestURL = new URL(item.url);
+            
+                    // Check the base part of the URL and parameters
+                    if (requestURL.origin + requestURL.pathname === expectedURL) {
+                        // Optionally, check for specific query parameters
+                        let params = requestURL.searchParams;
+                        let dig = params.get('dig');
+                        let td_trans = params.get('td_trans');
+            
+                        if (dig && td_trans) {  // Confirm that necessary parameters are present
+                            // Update the UI with the data
+                            document.querySelector('#uid').innerText = item.uid;
+                            document.querySelector('#user_id').innerText = item.user.id;
+                            document.querySelector('#currency').innerText = item.user.currency;
+                            document.querySelector('#locale').innerText = item.user.locale;
+                        }
+                    }
+                });
+            });
         }
     });
 }
