@@ -12,9 +12,9 @@ chrome.webRequest.onBeforeRequest.addListener(
     if (details.method === 'POST' && details.url.includes(filterStr)) {
       let arrayBuffer = details.requestBody.raw[0].bytes;
       let encodedURI = String.fromCharCode.apply(null, new Uint8Array(arrayBuffer));
-      encodedURI = decodeURIComponent(escape(encodedURI));
-      let postedString = decodeURIComponent(encodedURI);
+      let postedString = decodeURIComponent(escape(encodedURI));
       let postedObj = JSON.parse(postedString);
+
       postedObj['url'] = details.url;
       // console.log(details);
       writeNewRequest(details.tabId, postedObj);
