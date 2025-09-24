@@ -2,7 +2,7 @@
 	"manifest_version": 3,
 	"name": "Rockstat",
 	"description": "Rockstat позволяет визуально отслеживать запросы t4k, не открывая консоль chrome",
-	"version": "2.0.8",
+	"version": "2.0.9",
 	"permissions": [
 		"webRequest",
 		"storage",

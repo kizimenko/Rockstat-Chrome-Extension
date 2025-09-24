@@ -378,3 +378,166 @@ span.autohide {
 	float: left;
 	padding-left: 10px;
 }
+
+/* CSS переменные для светлой темы */
+:root {
+	--bg-primary: #ffffff;
+	--bg-secondary: #f6f7f8;
+	--bg-tertiary: #fefefe;
+	--text-primary: #000000;
+	--text-secondary: #666666;
+	--text-muted: rgb(168, 168, 168);
+	--border-color: #d9d9d9;
+	--border-light: rgb(231, 231, 231);
+	--selection-bg: rgb(186, 221, 251);
+	--button-bg: #f6f7f8;
+	--button-hover: #e6e7e8;
+	--accent-green: #4CAF50;
+	--accent-green-hover: #45a049;
+	--modal-overlay: rgba(0,0,0,0.5);
+}
+
+/* CSS переменные для темной темы */
+[data-theme="dark"] {
+	--bg-primary: #1a1a1a;
+	--bg-secondary: #2d2d2d;
+	--bg-tertiary: #333333;
+	--text-primary: #ffffff;
+	--text-secondary: #cccccc;
+	--text-muted: #888888;
+	--border-color: #404040;
+	--border-light: #404040;
+	--selection-bg: rgb(66, 133, 244);
+	--button-bg: #404040;
+	--button-hover: #505050;
+	--accent-green: #66BB6A;
+	--accent-green-hover: #5DBF63;
+	--modal-overlay: rgba(0,0,0,0.8);
+}
+
+/* Применение переменных к элементам */
+body {
+	background-color: var(--bg-primary);
+	color: var(--text-primary);
+}
+
+.header {
+	background-color: var(--bg-secondary);
+	border-bottom-color: var(--border-color);
+	color: var(--text-primary);
+}
+
+.linebreak {
+	border-top-color: var(--border-color);
+}
+
+*::selection {
+	background: var(--selection-bg);
+}
+
+.container > .block::after {
+	background-color: var(--border-light);
+}
+
+span.key {
+	color: var(--text-muted);
+}
+
+span.page-path {
+	color: var(--text-secondary);
+}
+
+#filter {
+	background-color: var(--bg-primary);
+	border: 1px solid var(--border-color);
+	color: var(--text-primary);
+}
+
+#clearFilter {
+	background-color: var(--button-bg);
+}
+
+#clearFilter:hover {
+	background-color: var(--button-hover);
+}
+
+.filter-mode-toggle {
+	border-color: var(--border-color);
+	background-color: var(--button-bg);
+	color: var(--text-primary);
+}
+
+.filter-mode-toggle:hover {
+	background-color: var(--button-hover);
+}
+
+.filter-mode-toggle.global-mode {
+	background-color: var(--accent-green);
+	border-color: var(--accent-green);
+}
+
+.filter-mode-toggle.global-mode:hover {
+	background-color: var(--accent-green-hover);
+}
+
+.export-controls button {
+	border-color: var(--border-color);
+	background-color: var(--button-bg);
+	color: var(--text-primary);
+}
+
+.export-controls button:hover {
+	background-color: var(--button-hover);
+}
+
+.modal {
+	background-color: var(--modal-overlay);
+}
+
+.modal-content {
+	background-color: var(--bg-tertiary);
+	border-color: var(--border-color);
+	color: var(--text-primary);
+}
+
+.modal-header {
+	background-color: var(--bg-secondary);
+	border-bottom-color: var(--border-color);
+}
+
+.close {
+	color: var(--text-muted);
+}
+
+.close:hover {
+	color: var(--text-primary);
+}
+
+.modal-body p {
+	color: var(--text-secondary);
+}
+
+.modal-body textarea {
+	background-color: var(--bg-primary);
+	border-color: var(--border-color);
+	color: var(--text-primary);
+}
+
+.modal-buttons button {
+	border-color: var(--border-color);
+	background-color: var(--button-bg);
+	color: var(--text-primary);
+}
+
+.modal-buttons button:hover {
+	background-color: var(--button-hover);
+}
+
+#saveExcludes, #saveObjectFilter {
+	background-color: var(--accent-green);
+	border-color: var(--accent-green);
+}
+
+#saveExcludes:hover, #saveObjectFilter:hover {
+	background-color: var(--accent-green-hover);
+}

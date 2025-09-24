@@ -24,6 +24,7 @@ function init() {
     // Инициализировать исключения и фильтр объектов
     initExcludes();
     initObjectFilter();
+    initTheme();
 
     msg(global); // Обработка сообщений
     document.querySelector('#filter').addEventListener('input', applyFilter); // Обработка фильтрации
@@ -47,6 +48,9 @@ function init() {
 
     // Обработчик переключения режима фильтрации
     document.querySelector('#filterModeToggle').addEventListener('click', toggleFilterMode);
+
+    // Обработчик переключения темы
+    document.querySelector('#themeToggle').addEventListener('click', toggleTheme);
 
     // Закрытие модального окна по клику вне его
     document.querySelector('#excludeModal').addEventListener('click', (e) => {
@@ -511,5 +515,49 @@ function refreshAllBlocks() {
             applyAllFilters();
         }
     });
+}
+
+// Инициализация темы при загрузке
+async function initTheme() {
+    const { theme } = await chrome.storage.local.get('theme');
+    const currentTheme = theme || 'light';
+
+    // Применить тему
+    document.documentElement.setAttribute('data-theme', currentTheme);
+
+    // Обновить иконку кнопки
+    updateThemeButton(currentTheme);
+
+    console.log('Загружена тема:', currentTheme);
+}
+
+// Переключение темы
+async function toggleTheme() {
+    const { theme } = await chrome.storage.local.get('theme');
+    const currentTheme = theme || 'light';
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+    // Применить новую тему
+    document.documentElement.setAttribute('data-theme', newTheme);
+
+    // Сохранить в storage
+    await chrome.storage.local.set({ 'theme': newTheme });
+
+    // Обновить иконку кнопки
+    updateThemeButton(newTheme);
+
+    console.log('Тема изменена на:', newTheme);
+}
+
+// Обновление иконки кнопки темы
+function updateThemeButton(theme) {
+    const button = document.querySelector('#themeToggle');
+    if (theme === 'dark') {
+        button.textContent = '☀️';
+        button.title = 'Переключить на светлую тему';
+    } else {
+        button.textContent = '🌙';
+        button.title = 'Переключить на темную тему';
+    }
 }
 
