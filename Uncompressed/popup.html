@@ -48,8 +48,35 @@
 			<input id="filter" placeholder="фильтр">
 			<div id="clearFilter"></div>
 		</div>
-		<div class="persistance">
-			<label for="dataPersistenceToggle">Включить сохранение данных</label>
+		<div class="controls">
+			<div class="persistance">
+				<label for="dataPersistenceToggle">Включить сохранение данных</label>
+			</div>
+			<div class="export-controls">
+				<button id="copyData">Копировать</button>
+				<button id="exportJSON">JSON</button>
+			</div>
+			<div class="exclude-controls">
+				<button id="excludeSettings">Настройки исключений</button>
+			</div>
+		</div>
+
+		<!-- Модальное окно настроек исключений -->
+		<div id="excludeModal" class="modal" style="display: none;">
+			<div class="modal-content">
+				<div class="modal-header">
+					<span>Исключения по названию события</span>
+					<span class="close">&times;</span>
+				</div>
+				<div class="modal-body">
+					<p>Введите названия событий для исключения (по одному на строку):</p>
+					<textarea id="excludeList" placeholder="page_view&#10;click&#10;scroll"></textarea>
+					<div class="modal-buttons">
+						<button id="saveExcludes">Сохранить</button>
+						<button id="cancelExcludes">Отмена</button>
+					</div>
+				</div>
+			</div>
 		</div>
 		
 	</div>
