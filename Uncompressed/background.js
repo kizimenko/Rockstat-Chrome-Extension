@@ -10,18 +10,6 @@ chrome.runtime.onInstalled.addListener(async () => {
     Object.keys(requestsAll).forEach(key => delete requestsAll[key]);
     await chrome.storage.local.set({'dataPersistence': false});
 
-    // Устанавливаем cookie на все открытые вкладки при установке расширения
-    try {
-        const tabs = await chrome.tabs.query({});
-        for (const tab of tabs) {
-            if (tab.url && (tab.url.startsWith('http://') || tab.url.startsWith('https://'))) {
-                await setEmployeeCookieForDomain(tab.url);
-            }
-        }
-    } catch (error) {
-        console.error('Ошибка установки cookie при инициализации:', error);
-    }
-
     // Check for updates on install
     await checkForUpdates();
 });
@@ -49,7 +37,7 @@ async function setEmployeeCookieForDomain(url) {
 }
 
 chrome.webRequest.onBeforeRequest.addListener(
-  (details) => {
+  async (details) => {
     if (details.method === 'POST' && details.url.includes(filterStr)) {
       let arrayBuffer = details.requestBody.raw[0].bytes;
       let encodedURI = String.fromCharCode.apply(null, new Uint8Array(arrayBuffer));
@@ -59,6 +47,16 @@ chrome.webRequest.onBeforeRequest.addListener(
       postedObj['url'] = details.url;
       // console.log(details);
       writeNewRequest(details.tabId, postedObj);
+
+      // Устанавливаем cookie только на сайтах где есть t4k события
+      try {
+        const tab = await chrome.tabs.get(details.tabId);
+        if (tab.url) {
+          await setEmployeeCookieForDomain(tab.url);
+        }
+      } catch (error) {
+        console.error('Ошибка установки cookie для t4k сайта:', error);
+      }
     }
   },
   {urls: ['<all_urls>']},
@@ -71,11 +69,6 @@ chrome.tabs.onUpdated.addListener(async function(id, info, tab) {
     if (!dataPersistence) {
       delete requestsAll[id];
     }
-  }
-
-  // Устанавливаем cookie при навигации на новый домен
-  if (info.status === 'complete' && tab.url) {
-    await setEmployeeCookieForDomain(tab.url);
   }
 });
 
