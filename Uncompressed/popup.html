@@ -57,6 +57,7 @@
 				<button id="copyData">Копировать</button>
 				<button id="exportJSON">JSON</button>
 				<button id="excludeSettings">Исключения</button>
+				<button id="objectFilterSettings">Фильтр объектов</button>
 			</div>
 		</div>
 
@@ -73,6 +74,24 @@
 					<div class="modal-buttons">
 						<button id="saveExcludes">Сохранить</button>
 						<button id="cancelExcludes">Отмена</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Модальное окно настроек фильтра объектов -->
+		<div id="objectFilterModal" class="modal" style="display: none;">
+			<div class="modal-content">
+				<div class="modal-header">
+					<span>Фильтр вложенных объектов</span>
+					<span class="close-object-filter">&times;</span>
+				</div>
+				<div class="modal-body">
+					<p>Введите названия объектов для отображения (по одному на строку). Если список пуст, будут видны все объекты:</p>
+					<textarea id="objectFilterList" placeholder="data&#10;user&#10;page"></textarea>
+					<div class="modal-buttons">
+						<button id="saveObjectFilter">Сохранить</button>
+						<button id="cancelObjectFilter">Отмена</button>
 					</div>
 				</div>
 			</div>

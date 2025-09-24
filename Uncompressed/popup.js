@@ -21,8 +21,9 @@ function init() {
 
 
 
-    // Инициализировать исключения
+    // Инициализировать исключения и фильтр объектов
     initExcludes();
+    initObjectFilter();
 
     msg(global); // Обработка сообщений
     document.querySelector('#filter').addEventListener('input', applyFilter); // Обработка фильтрации
@@ -38,6 +39,12 @@ function init() {
     document.querySelector('#saveExcludes').addEventListener('click', saveExcludes);
     document.querySelector('#cancelExcludes').addEventListener('click', closeExcludeModal);
 
+    // Обработчики для фильтра объектов
+    document.querySelector('#objectFilterSettings').addEventListener('click', openObjectFilterModal);
+    document.querySelector('.close-object-filter').addEventListener('click', closeObjectFilterModal);
+    document.querySelector('#saveObjectFilter').addEventListener('click', saveObjectFilter);
+    document.querySelector('#cancelObjectFilter').addEventListener('click', closeObjectFilterModal);
+
     // Обработчик переключения режима фильтрации
     document.querySelector('#filterModeToggle').addEventListener('click', toggleFilterMode);
 
@@ -45,6 +52,13 @@ function init() {
     document.querySelector('#excludeModal').addEventListener('click', (e) => {
         if (e.target.id === 'excludeModal') {
             closeExcludeModal();
+        }
+    });
+
+    // Закрытие модального окна фильтра объектов по клику вне его
+    document.querySelector('#objectFilterModal').addEventListener('click', (e) => {
+        if (e.target.id === 'objectFilterModal') {
+            closeObjectFilterModal();
         }
     });
 
@@ -330,6 +344,15 @@ let excludedNamesSet = new Set(); // Быстрый поиск O(1)
 let eventCache = new Map(); // Кеш извлеченных названий событий
 let isGlobalFilterMode = false; // Режим фильтрации: false = по названию, true = по всему объекту
 
+// Переменные для фильтра объектов (глобальные для доступа из модулей)
+let allowedObjects = [];
+let allowedObjectsSet = new Set(); // Быстрый поиск O(1)
+let isObjectFilterActive = false; // Активен ли фильтр объектов
+
+// Делаем переменные глобальными для доступа из модулей
+window.allowedObjectsSet = allowedObjectsSet;
+window.isObjectFilterActive = isObjectFilterActive;
+
 // Открытие модального окна настроек исключений
 async function openExcludeModal() {
     // Загрузить текущие исключения из storage
@@ -377,6 +400,61 @@ async function initExcludes() {
     excludedNames = excludeList || [];
     excludedNamesSet = new Set(excludedNames.map(name => name.toLowerCase()));
     console.log('Загружены исключения:', excludedNames);
+}
+
+// Инициализация фильтра объектов при загрузке
+async function initObjectFilter() {
+    const { objectFilterList } = await chrome.storage.local.get('objectFilterList');
+    allowedObjects = objectFilterList || [];
+    allowedObjectsSet = new Set(allowedObjects.map(name => name.toLowerCase()));
+    isObjectFilterActive = allowedObjects.length > 0;
+
+    // Обновляем глобальные переменные
+    window.allowedObjectsSet = allowedObjectsSet;
+    window.isObjectFilterActive = isObjectFilterActive;
+
+    console.log('Загружен фильтр объектов:', allowedObjects);
+}
+
+// Открытие модального окна настроек фильтра объектов
+async function openObjectFilterModal() {
+    // Загрузить текущий фильтр объектов из storage
+    const { objectFilterList } = await chrome.storage.local.get('objectFilterList');
+    allowedObjects = objectFilterList || [];
+
+    document.querySelector('#objectFilterList').value = allowedObjects.join('\n');
+    document.querySelector('#objectFilterModal').style.display = 'block';
+}
+
+// Закрытие модального окна фильтра объектов
+function closeObjectFilterModal() {
+    document.querySelector('#objectFilterModal').style.display = 'none';
+}
+
+// Сохранение фильтра объектов
+async function saveObjectFilter() {
+    const textarea = document.querySelector('#objectFilterList');
+    const newAllowedObjects = textarea.value
+        .split('\n')
+        .map(line => line.trim().toLowerCase()) // Нормализация к нижнему регистру
+        .filter(line => line.length > 0);
+
+    // Обновление структур данных
+    allowedObjects = newAllowedObjects;
+    allowedObjectsSet = new Set(newAllowedObjects);
+    isObjectFilterActive = allowedObjects.length > 0;
+
+    // Обновляем глобальные переменные
+    window.allowedObjectsSet = allowedObjectsSet;
+    window.isObjectFilterActive = isObjectFilterActive;
+
+    // Сохранить в storage
+    await chrome.storage.local.set({ 'objectFilterList': allowedObjects });
+
+    closeObjectFilterModal();
+
+    console.log('Фильтр объектов сохранен:', allowedObjects);
+    console.log('Фильтр объектов активен:', isObjectFilterActive);
 }
 
 // Переключение режима фильтрации
