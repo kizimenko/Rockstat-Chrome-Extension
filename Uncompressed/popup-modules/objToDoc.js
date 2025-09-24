@@ -5,13 +5,17 @@ export default function objToDoc(objArr, global) {
     // Перебор массива объектов - запросов для активной вкладки
     objArr.forEach(function(obj) {
         let domain = obj.url.match(/.*:\/\/([^\/]+).*/)?.[1] || ''; // Домен куда шлем аналитику
+        let pagePath = obj.page?.path || ''; // Путь страницы
+
+        // Формируем базовый заголовок
         let labelText = (obj.name || '') + ' - ' + (obj.projectId || '') + (domain ? ' - ' + domain : '');
-        createHtmlBlock(obj, labelText, fragment);
+
+        createHtmlBlock(obj, labelText, pagePath, fragment);
         // console.log(obj);
     });
 
     // Создание разворачиваемого блока HTML
-    function createHtmlBlock(obj, labelText, fragment) {
+    function createHtmlBlock(obj, labelText, pagePath, fragment) {
         let divBlock = document.createElement('div'); // Создать новый элемент div
         divBlock.className = 'block';
 
@@ -24,7 +28,16 @@ export default function objToDoc(objArr, global) {
 
         let label = document.createElement('label'); // Создать новый элемент label
         label.htmlFor = 'hd-' + global.blockNum;
-        label.innerHTML = labelText;
+
+        // Формируем HTML с основным текстом и путем страницы
+        let labelHTML = labelText;
+        if (pagePath) {
+            // Сокращаем путь если он слишком длинный
+            let shortPath = pagePath.length > 30 ? '...' + pagePath.slice(-27) : pagePath;
+            labelHTML += '<span class="page-path">' + shortPath + '</span>';
+        }
+
+        label.innerHTML = labelHTML;
         divBlock.appendChild(label);
         global.blockNum++;
 
@@ -58,7 +71,7 @@ export default function objToDoc(objArr, global) {
                 let stringObj = objToStr(obj[key]);
                 // Заголовок раскрываемого блока
                 let labelText = '<span class="key">' + key + ': ' + '</span>' + '<span class="autohide">' + stringObj + '</span>';
-                createHtmlBlock(obj[key], labelText, contentFragment);
+                createHtmlBlock(obj[key], labelText, '', contentFragment);
             }
         }
 

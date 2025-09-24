@@ -158,6 +158,18 @@ span.key {
 	color: rgb(168, 168, 168);
 }
 
+/* Стили для пути страницы */
+span.page-path {
+	display: inline;
+	margin: initial;
+	margin-left: 8px;
+	color: #666;
+	font-size: 8pt;
+	font-weight: normal;
+	opacity: 0.8;
+	font-style: italic;
+}
+
 /* Исчезающий текст при раскрытии блока */
 span.autohide {
 	display: inline;
@@ -169,11 +181,18 @@ span.autohide {
 }
 
 /* Стили строки фильтрации */
-#filter {
+.filter-container {
+	display: flex;
+	align-items: center;
 	margin-top: 5px;
+	position: relative;
+}
+
+#filter {
 	height: 20px;
     padding-left: 2px;
 	padding-right: 22px;
+	flex: 1;
 }
 
 #clearFilter {
@@ -188,11 +207,37 @@ span.autohide {
 	border-radius: 8px;
 	position: relative;
 	left: -24px;
-    top: 3px;
+    top: 0px;
 }
 
 #clearFilter:hover {
 	background-color: #d9d9d9;
+}
+
+.filter-mode-toggle {
+	margin-left: 5px;
+	padding: 2px 6px;
+	font-size: 12px;
+	border: 1px solid #d9d9d9;
+	background-color: #f6f7f8;
+	cursor: pointer;
+	border-radius: 3px;
+	min-width: 24px;
+	height: 24px;
+}
+
+.filter-mode-toggle:hover {
+	background-color: #e6e7e8;
+}
+
+.filter-mode-toggle.global-mode {
+	background-color: #4CAF50;
+	color: white;
+	border-color: #4CAF50;
+}
+
+.filter-mode-toggle.global-mode:hover {
+	background-color: #45a049;
 }
 
 .controls {
@@ -224,22 +269,6 @@ span.autohide {
 	background-color: #e6e7e8;
 }
 
-.exclude-controls {
-	margin-top: 5px;
-}
-
-.exclude-controls button {
-	padding: 4px 8px;
-	font-size: 11px;
-	border: 1px solid #d9d9d9;
-	background-color: #f6f7f8;
-	cursor: pointer;
-	border-radius: 3px;
-}
-
-.exclude-controls button:hover {
-	background-color: #e6e7e8;
-}
 
 /* Модальное окно */
 .modal {

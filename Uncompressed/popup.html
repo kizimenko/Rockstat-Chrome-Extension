@@ -44,9 +44,10 @@
 			<span id="textReqCount"></span>
 			<span id="domain"></span>
 		</span>
-		<div>
-			<input id="filter" placeholder="фильтр">
+		<div class="filter-container">
+			<input id="filter" placeholder="фильтр по названию">
 			<div id="clearFilter"></div>
+			<button id="filterModeToggle" class="filter-mode-toggle" title="Переключить режим поиска">📍</button>
 		</div>
 		<div class="controls">
 			<div class="persistance">
@@ -55,9 +56,7 @@
 			<div class="export-controls">
 				<button id="copyData">Копировать</button>
 				<button id="exportJSON">JSON</button>
-			</div>
-			<div class="exclude-controls">
-				<button id="excludeSettings">Настройки исключений</button>
+				<button id="excludeSettings">Исключения</button>
 			</div>
 		</div>
 

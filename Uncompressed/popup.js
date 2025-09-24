@@ -38,6 +38,9 @@ function init() {
     document.querySelector('#saveExcludes').addEventListener('click', saveExcludes);
     document.querySelector('#cancelExcludes').addEventListener('click', closeExcludeModal);
 
+    // Обработчик переключения режима фильтрации
+    document.querySelector('#filterModeToggle').addEventListener('click', toggleFilterMode);
+
     // Закрытие модального окна по клику вне его
     document.querySelector('#excludeModal').addEventListener('click', (e) => {
         if (e.target.id === 'excludeModal') {
@@ -203,21 +206,34 @@ function isEventExcluded(eventName) {
 
 // Оптимизированная проверка текстового фильтра
 function checkTextFilter(el, filterStr) {
-    // Проверка заголовка
-    const label = el.querySelector('label');
-    if (label && label.innerText.toLowerCase().includes(filterStr)) {
-        return true;
-    }
-
-    // Проверка содержимого (ленивая загрузка)
-    const spans = el.querySelectorAll('span');
-    for (const span of spans) {
-        if (span.innerText.toLowerCase().includes(filterStr)) {
+    if (isGlobalFilterMode) {
+        // Режим поиска по всему объекту
+        // Проверка заголовка
+        const label = el.querySelector('label');
+        if (label && label.innerText.toLowerCase().includes(filterStr)) {
             return true;
         }
-    }
 
-    return false;
+        // Проверка содержимого (ленивая загрузка)
+        const spans = el.querySelectorAll('span');
+        for (const span of spans) {
+            if (span.innerText.toLowerCase().includes(filterStr)) {
+                return true;
+            }
+        }
+
+        return false;
+    } else {
+        // Режим поиска только по названию события
+        const label = el.querySelector('label');
+        if (label) {
+            const labelText = label.innerText;
+            // Извлекаем только название события (до первого ' - ')
+            const eventName = labelText.split(' - ')[0].trim().toLowerCase();
+            return eventName.includes(filterStr);
+        }
+        return false;
+    }
 }
 
 // Обратная совместимость
@@ -312,6 +328,7 @@ function extractBlockData(block) {
 let excludedNames = [];
 let excludedNamesSet = new Set(); // Быстрый поиск O(1)
 let eventCache = new Map(); // Кеш извлеченных названий событий
+let isGlobalFilterMode = false; // Режим фильтрации: false = по названию, true = по всему объекту
 
 // Открытие модального окна настроек исключений
 async function openExcludeModal() {
@@ -360,6 +377,29 @@ async function initExcludes() {
     excludedNames = excludeList || [];
     excludedNamesSet = new Set(excludedNames.map(name => name.toLowerCase()));
     console.log('Загружены исключения:', excludedNames);
+}
+
+// Переключение режима фильтрации
+function toggleFilterMode() {
+    const toggleButton = document.querySelector('#filterModeToggle');
+    const filterInput = document.querySelector('#filter');
+
+    isGlobalFilterMode = !isGlobalFilterMode;
+
+    if (isGlobalFilterMode) {
+        toggleButton.classList.add('global-mode');
+        toggleButton.textContent = '🌐';
+        toggleButton.title = 'Поиск по всему объекту (клик для поиска по названию)';
+        filterInput.placeholder = 'фильтр по всему объекту';
+    } else {
+        toggleButton.classList.remove('global-mode');
+        toggleButton.textContent = '📍';
+        toggleButton.title = 'Поиск по названию события (клик для поиска по всему объекту)';
+        filterInput.placeholder = 'фильтр по названию';
+    }
+
+    // Применить фильтр с новым режимом
+    applyAllFilters();
 }
 
 // Устаревшая функция - сохранена для обратной совместимости
