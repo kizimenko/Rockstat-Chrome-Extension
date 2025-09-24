@@ -88,7 +88,7 @@ chrome.runtime.onConnect.addListener(function(port) {
   connection.onDisconnect.addListener(() => { connection = undefined; });
 
   port.onMessage.addListener(function(request) {
-    if (request.msg !== 'handshake') return;
+    if (request.msg !== 'handshake' && request.msg !== 'refresh') return;
 
     chrome.tabs.query({active: true, currentWindow: true}, async function(tabs) {
       if (!tabs[0]) return;

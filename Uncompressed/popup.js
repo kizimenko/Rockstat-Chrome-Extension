@@ -388,8 +388,8 @@ async function saveExcludes() {
     // Очистка кеша при изменении исключений
     eventCache.clear();
 
-    // Применить оптимизированную фильтрацию
-    applyAllFilters();
+    // Очистить существующие блоки и перерисовать с новым фильтром
+    refreshAllBlocks();
 
     console.log('Исключения сохранены:', excludedNames);
 }
@@ -453,6 +453,9 @@ async function saveObjectFilter() {
 
     closeObjectFilterModal();
 
+    // Очистить существующие блоки и перерисовать с новым фильтром
+    refreshAllBlocks();
+
     console.log('Фильтр объектов сохранен:', allowedObjects);
     console.log('Фильтр объектов активен:', isObjectFilterActive);
 }
@@ -484,5 +487,29 @@ function toggleFilterMode() {
 // Теперь используется applyAllFilters()
 function applyExcludeFilter() {
     applyAllFilters();
+}
+
+// Функция для перерисовки всех блоков с новыми фильтрами
+function refreshAllBlocks() {
+    // Очистить контейнер с блоками
+    const container = document.querySelector('div.container.font');
+    container.innerHTML = '';
+
+    // Сбросить счетчик блоков
+    const global = { blockNum: 1 };
+
+    // Запросить данные заново у background script
+    let port = chrome.runtime.connect();
+    port?.postMessage({msg: 'refresh'});
+
+    // Прослушивать ответ
+    port.onMessage.addListener(function(request) {
+        if (request.msg === 'requests' && request.data && request.data.length > 0) {
+            // Перерисовать блоки с новыми фильтрами
+            container.appendChild( objToDoc(request.data, global) );
+            // Применить все фильтры
+            applyAllFilters();
+        }
+    });
 }
 
