@@ -2,6 +2,10 @@ let connection;
 let requestsAll = {}; // use let instead of const
 const filterStr = 't4k.json';
 
+// GitHub repository info for update checks
+const GITHUB_REPO = 'kizimenko/Rockstat-Chrome-Extension';
+const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
+
 chrome.runtime.onInstalled.addListener(async () => {
     Object.keys(requestsAll).forEach(key => delete requestsAll[key]);
     await chrome.storage.local.set({'dataPersistence': false});
@@ -17,6 +21,9 @@ chrome.runtime.onInstalled.addListener(async () => {
     } catch (error) {
         console.error('Ошибка установки cookie при инициализации:', error);
     }
+
+    // Check for updates on install
+    await checkForUpdates();
 });
 
 // Функция установки cookie сотрудника на текущий домен
@@ -116,3 +123,48 @@ function writeNewRequest(tabId, bodyObj) {
     connection.postMessage({msg: 'requests', data: [bodyObj]});
   }
 }
+
+// Update checking functionality
+async function checkForUpdates() {
+  try {
+    const response = await fetch(GITHUB_API_URL);
+    if (!response.ok) return;
+
+    const release = await response.json();
+    const latestVersion = release.tag_name.replace('v', ''); // Remove 'v' prefix if present
+    const currentVersion = chrome.runtime.getManifest().version;
+
+    if (isNewerVersion(latestVersion, currentVersion)) {
+      await chrome.storage.local.set({
+        'updateAvailable': true,
+        'latestVersion': latestVersion,
+        'releaseUrl': release.html_url,
+        'releaseNotes': release.body || ''
+      });
+    }
+  } catch (error) {
+    console.error('Ошибка проверки обновлений:', error);
+  }
+}
+
+function isNewerVersion(latest, current) {
+  const latestParts = latest.split('.').map(Number);
+  const currentParts = current.split('.').map(Number);
+
+  for (let i = 0; i < Math.max(latestParts.length, currentParts.length); i++) {
+    const latestPart = latestParts[i] || 0;
+    const currentPart = currentParts[i] || 0;
+
+    if (latestPart > currentPart) return true;
+    if (latestPart < currentPart) return false;
+  }
+  return false;
+}
+
+// Periodic update check (every 24 hours)
+chrome.alarms.create('updateCheck', { periodInMinutes: 1440 });
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === 'updateCheck') {
+    checkForUpdates();
+  }
+});

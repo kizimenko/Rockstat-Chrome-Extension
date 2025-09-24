@@ -25,6 +25,7 @@ function init() {
     initExcludes();
     initObjectFilter();
     initTheme();
+    checkUpdateNotification();
 
     msg(global); // Обработка сообщений
     document.querySelector('#filter').addEventListener('input', applyFilter); // Обработка фильтрации
@@ -559,5 +560,40 @@ function updateThemeButton(theme) {
         button.textContent = '🌙';
         button.title = 'Переключить на темную тему';
     }
+}
+
+// Проверка уведомлений об обновлении
+async function checkUpdateNotification() {
+    try {
+        const result = await chrome.storage.local.get(['updateAvailable', 'latestVersion', 'releaseUrl', 'updateDismissed']);
+
+        if (result.updateAvailable && !result.updateDismissed) {
+            showUpdateNotification(result.latestVersion, result.releaseUrl);
+        }
+    } catch (error) {
+        console.error('Ошибка проверки уведомлений об обновлении:', error);
+    }
+}
+
+// Показать уведомление об обновлении
+function showUpdateNotification(version, releaseUrl) {
+    const notification = document.getElementById('updateNotification');
+    const versionSpan = document.getElementById('latestVersionSpan');
+    const downloadBtn = document.getElementById('downloadUpdate');
+    const dismissBtn = document.getElementById('dismissUpdate');
+
+    versionSpan.textContent = version;
+    notification.style.display = 'block';
+
+    // Обработчик скачивания
+    downloadBtn.onclick = () => {
+        chrome.tabs.create({ url: releaseUrl });
+    };
+
+    // Обработчик закрытия
+    dismissBtn.onclick = async () => {
+        notification.style.display = 'none';
+        await chrome.storage.local.set({ updateDismissed: true });
+    };
 }
 

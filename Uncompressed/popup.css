@@ -541,3 +541,74 @@ span.page-path {
 #saveExcludes:hover, #saveObjectFilter:hover {
 	background-color: var(--accent-green-hover);
 }
+
+/* Update notification styles */
+.update-notification {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	padding: 8px 14px;
+	margin-bottom: 10px;
+	border-radius: 6px;
+	position: relative;
+	animation: slideDown 0.3s ease-out;
+}
+
+.update-content {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	font-size: 13px;
+}
+
+.update-content span {
+	flex: 1;
+}
+
+#downloadUpdate {
+	background: rgba(255, 255, 255, 0.2);
+	border: 1px solid rgba(255, 255, 255, 0.3);
+	color: white;
+	padding: 4px 12px;
+	border-radius: 4px;
+	cursor: pointer;
+	margin-left: 10px;
+	font-size: 12px;
+	transition: background 0.2s;
+}
+
+#downloadUpdate:hover {
+	background: rgba(255, 255, 255, 0.3);
+}
+
+#dismissUpdate {
+	background: transparent;
+	border: none;
+	color: rgba(255, 255, 255, 0.8);
+	cursor: pointer;
+	padding: 2px 6px;
+	margin-left: 6px;
+	border-radius: 3px;
+	font-size: 14px;
+	transition: color 0.2s;
+}
+
+#dismissUpdate:hover {
+	color: white;
+	background: rgba(255, 255, 255, 0.1);
+}
+
+@keyframes slideDown {
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Dark theme for update notification */
+[data-theme="dark"] .update-notification {
+	background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+}
