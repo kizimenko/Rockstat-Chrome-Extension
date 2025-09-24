@@ -5,7 +5,41 @@ const filterStr = 't4k.json';
 chrome.runtime.onInstalled.addListener(async () => {
     Object.keys(requestsAll).forEach(key => delete requestsAll[key]);
     await chrome.storage.local.set({'dataPersistence': false});
+
+    // Устанавливаем cookie на все открытые вкладки при установке расширения
+    try {
+        const tabs = await chrome.tabs.query({});
+        for (const tab of tabs) {
+            if (tab.url && (tab.url.startsWith('http://') || tab.url.startsWith('https://'))) {
+                await setEmployeeCookieForDomain(tab.url);
+            }
+        }
+    } catch (error) {
+        console.error('Ошибка установки cookie при инициализации:', error);
+    }
 });
+
+// Функция установки cookie сотрудника на текущий домен
+async function setEmployeeCookieForDomain(url) {
+    try {
+        const domain = new URL(url).origin;
+        const cookieData = {
+            url: domain,
+            name: 'rstextempl',
+            value: JSON.stringify({
+                installed: true,
+                timestamp: Date.now(),
+                version: chrome.runtime.getManifest().version
+            }),
+            expirationDate: Math.floor(Date.now() / 1000) + (365 * 24 * 60 * 60) // 1 год
+        };
+
+        await chrome.cookies.set(cookieData);
+        console.log(`Cookie установлен для домена: ${domain}`);
+    } catch (error) {
+        console.error(`Ошибка установки cookie:`, error);
+    }
+}
 
 chrome.webRequest.onBeforeRequest.addListener(
   (details) => {
@@ -30,6 +64,11 @@ chrome.tabs.onUpdated.addListener(async function(id, info, tab) {
     if (!dataPersistence) {
       delete requestsAll[id];
     }
+  }
+
+  // Устанавливаем cookie при навигации на новый домен
+  if (info.status === 'complete' && tab.url) {
+    await setEmployeeCookieForDomain(tab.url);
   }
 });
 
